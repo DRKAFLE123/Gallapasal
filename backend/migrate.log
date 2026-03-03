@@ -1,0 +1,26 @@
+
+   INFO  Running migrations.  
+
+  2026_03_02_172002_add_performance_indexes  2.93ms FAIL
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[42000]: Syntax error or access violation: 1061 Duplicate key name 'purchases_vendor_name_index' (Connection: mysql, SQL: alter table `purchases` add index `purchases_vendor_name_index`(`vendor_name`))
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:825
+    821???                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    822???                 );
+    823???             }
+    824??? 
+  ??? 825???             throw new QueryException(
+    826???                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    827???             );
+    828???         }
+    829???     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connection.php:571
+      PDOException::("SQLSTATE[42000]: Syntax error or access violation: 1061 Duplicate key name 'purchases_vendor_name_index'")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connection.php:571
+      PDOStatement::execute()
+
