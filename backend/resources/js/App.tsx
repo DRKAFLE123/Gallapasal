@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter } from 'react-router-dom';
-import AppRoutes from './routes';
+import { RouterProvider } from 'react-router-dom';
+import { router } from './routes';
 import { useAuthStore } from './store/authStore';
 
 function App() {
@@ -11,9 +11,7 @@ function App() {
     }, [checkAuth]);
 
     return (
-        <BrowserRouter>
-            <AppRoutes />
-        </BrowserRouter>
+        <RouterProvider router={router} />
     );
 }
 

@@ -282,7 +282,7 @@ const PurchaseSlipHistory = () => {
                             ))}
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
-                            {table.getRowModel().rows.map(row => (
+                            {table.getRowModel().rows.slice(0, table.getState().pagination.pageSize || 10).map(row => (
                                 <tr key={row.id} className="hover:bg-orange-50 transition-colors">
                                     {row.getVisibleCells().map(cell => (
                                         <td key={cell.id} className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">

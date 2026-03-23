@@ -12,10 +12,14 @@ use App\Http\Controllers\Api\V1\SystemController;
 
 Route::prefix('v1')->group(function () {
     Route::post('/auth/login', [AuthController::class, 'login']);
+    Route::post('/auth/register', [AuthController::class, 'register']);
+    Route::post('/auth/forgot-password', [AuthController::class, 'forgotPassword']);
+    Route::post('/auth/reset-password', [AuthController::class, 'resetPassword']);
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/auth/user', [AuthController::class, 'user']);
         Route::post('/auth/user/profile', [AuthController::class, 'updateProfile']);
+        Route::post('/auth/user/password', [AuthController::class, 'updatePassword']);
         Route::post('/auth/logout', [AuthController::class, 'logout']);
 
         Route::get('/dashboard/stats', [DashboardController::class, 'stats']);

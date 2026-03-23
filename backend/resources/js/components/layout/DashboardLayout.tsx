@@ -2,8 +2,36 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Outlet, Navigate, Link, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
 import ProfileModal from '../ProfileModal';
-import { Home, ShoppingCart, Activity, FileText, LogOut, Package, Database, Menu, X, User, ChevronDown } from 'lucide-react';
+import { Home, ShoppingCart, Activity, FileText, LogOut, Package, Database, Menu, X, User, ChevronDown, AlertTriangle } from 'lucide-react';
 import api from '../../lib/axios';
+
+export class RouteErrorBoundary extends React.Component<{children: React.ReactNode}, {hasError: boolean, error: Error | null}> {
+    constructor(props: {children: React.ReactNode}) {
+        super(props);
+        this.state = { hasError: false, error: null };
+    }
+    static getDerivedStateFromError(error: Error) { return { hasError: true, error }; }
+    componentDidCatch(error: Error, info: any) { console.error("Router Boundary Caught:", error, info); }
+    render() {
+        if (this.state.hasError) {
+            return (
+                <div className="p-8 text-center bg-white rounded-xl shadow-sm border border-red-200 mt-10 max-w-4xl mx-auto">
+                    <AlertTriangle className="w-16 h-16 text-red-500 mx-auto mb-4" />
+                    <h2 className="text-2xl font-bold text-gray-900 mb-2">Something went wrong</h2>
+                    <p className="text-gray-600 mb-6">The application encountered a fatal error while trying to render this page.</p>
+                    <div className="bg-red-50 p-4 rounded text-left text-sm text-red-800 font-mono overflow-x-auto whitespace-pre-wrap">
+                        {this.state.error?.toString()}
+                        <br/><br/>
+                        {this.state.error?.stack}
+                    </div>
+                    <button onClick={() => window.location.reload()} className="mt-6 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Hard Reload Page</button>
+                    <button onClick={() => { localStorage.clear(); window.location.href = '/login'; }} className="mt-6 ml-4 px-6 py-2 bg-red-600 text-white rounded hover:bg-red-700">Clear Cache & Logout</button>
+                </div>
+            );
+        }
+        return this.props.children;
+    }
+}
 
 const navigation = [
     { name: 'Dashboard', href: '/', icon: Home },
@@ -168,13 +196,13 @@ const DashboardLayout = () => {
                                 {navigation.map((item) => {
                                     const isActive = location.pathname === item.href || (item.href !== '/' && location.pathname.startsWith(item.href));
                                     return (
-                                        <Link key={item.name} to={item.href}
+                                        <a key={item.name} href={item.href}
                                             onClick={() => setIsMobileMenuOpen(false)}
                                             className={`group flex items-center rounded-md px-2 py-2 text-base font-medium ${isActive ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'}`}
                                         >
                                             <item.icon className={`mr-4 h-6 w-6 flex-shrink-0 ${isActive ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-500'}`} />
                                             {item.name}
-                                        </Link>
+                                        </a>
                                     );
                                 })}
                             </nav>
@@ -193,12 +221,12 @@ const DashboardLayout = () => {
                             {navigation.map((item) => {
                                 const isActive = location.pathname === item.href || (item.href !== '/' && location.pathname.startsWith(item.href));
                                 return (
-                                    <Link key={item.name} to={item.href}
+                                    <a key={item.name} href={item.href}
                                         className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md ${isActive ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'}`}
                                     >
                                         <item.icon className={`mr-3 flex-shrink-0 h-5 w-5 ${isActive ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-500'}`} />
                                         {item.name}
-                                    </Link>
+                                    </a>
                                 );
                             })}
                         </nav>
@@ -240,7 +268,9 @@ const DashboardLayout = () => {
 
                 <main className="flex-1 relative overflow-y-auto focus:outline-none bg-gray-100">
                     <div className="py-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-                        <Outlet />
+                        <RouteErrorBoundary>
+                            <Outlet />
+                        </RouteErrorBoundary>
                     </div>
                 </main>
             </div>

@@ -31,14 +31,8 @@ interface Sale {
 const SalesEntry = () => {
     const [sales, setSales] = useState<Sale[]>([]);
     const [grains, setGrains] = useState<Grain[]>([]);
-    const { register, handleSubmit, watch, setValue, reset, formState: { errors } } = useForm();
-    const quantity = watch('quantity', 0);
-    const rate = watch('rate', 0);
+    const { register, handleSubmit, getValues, setValue, reset, formState: { errors } } = useForm();
     const [errorMsg, setErrorMsg] = useState('');
-
-    useEffect(() => {
-        setValue('total_amount', (quantity * rate).toFixed(2));
-    }, [quantity, rate, setValue]);
 
     const loadData = async () => {
         try {
@@ -53,14 +47,21 @@ const SalesEntry = () => {
         }
     };
 
+    // Load data only on mount
     useEffect(() => {
         loadData();
+    }, [/* only run once */]);
+
+    // Setup initial dates
+    useEffect(() => {
         const now = new Date();
         setValue('date_ad', getTodayAdDateStr());
         setValue('date_bs', getTodayNepaliDateStr());
         setValue('time', now.toTimeString().split(' ')[0].substring(0, 5));
+    }, [setValue]);
 
-        // Add keyboard shortcut for Save
+    // Add keyboard shortcut for Save
+    useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if ((e.ctrlKey || e.metaKey) && e.key === 's') {
                 e.preventDefault();
@@ -70,7 +71,7 @@ const SalesEntry = () => {
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [setValue, handleSubmit]);
+    }, [handleSubmit]);
 
     const onSubmit = async (data: any) => {
         setErrorMsg('');
@@ -166,12 +167,28 @@ const SalesEntry = () => {
 
                         <div className="lg:col-span-1">
                             <label className="block text-xs font-medium text-gray-700">Qty</label>
-                            <input type="number" step="0.01" {...register('quantity', { required: true, min: 0.01 })} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm border py-2 px-3" />
+                            <input type="number" step="0.01" {...register('quantity', { 
+                                required: true, 
+                                min: 0.01,
+                                onChange: (e) => {
+                                    const qty = parseFloat(e.target.value) || 0;
+                                    const currentRate = parseFloat(getValues('rate')) || 0;
+                                    setValue('total_amount', (qty * currentRate).toFixed(2));
+                                }
+                            })} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm border py-2 px-3" />
                         </div>
 
                         <div className="lg:col-span-1">
                             <label className="block text-xs font-medium text-gray-700">Rate</label>
-                            <input type="number" step="0.01" {...register('rate', { required: true, min: 0 })} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm border py-2 px-3" />
+                            <input type="number" step="0.01" {...register('rate', { 
+                                required: true, 
+                                min: 0,
+                                onChange: (e) => {
+                                    const rate = parseFloat(e.target.value) || 0;
+                                    const currentQty = parseFloat(getValues('quantity')) || 0;
+                                    setValue('total_amount', (currentQty * rate).toFixed(2));
+                                }
+                            })} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm border py-2 px-3" />
                         </div>
 
                     </div>
@@ -209,7 +226,7 @@ const SalesEntry = () => {
                             ))}
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
-                            {table.getRowModel().rows.map(row => (
+                            {table.getRowModel().rows.slice(0, table.getState().pagination.pageSize || 10).map(row => (
                                 <tr key={row.id} className="hover:bg-gray-50 transition-colors">
                                     {row.getVisibleCells().map(cell => (
                                         <td key={cell.id} className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">

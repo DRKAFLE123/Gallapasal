@@ -148,7 +148,6 @@ const PaymentModal = ({ purchase, onClose, onSuccess }: { purchase: Purchase; on
 const PurchasesEntry = () => {
     const [purchases, setPurchases] = useState<Purchase[]>([]);
     const [grains, setGrains] = useState<Grain[]>([]);
-    const [rowSelection, setRowSelection] = useState({});
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [payingPurchase, setPayingPurchase] = useState<Purchase | null>(null);
 
@@ -157,13 +156,7 @@ const PurchasesEntry = () => {
     const [filterToDate, setFilterToDate] = useState('');
     const [filterGrainId, setFilterGrainId] = useState('');
 
-    const { register, handleSubmit, watch, setValue, reset, formState: { errors } } = useForm();
-    const quantity = watch('quantity', 0);
-    const rate = watch('rate', 0);
-
-    useEffect(() => {
-        setValue('total_amount', (quantity * rate).toFixed(2));
-    }, [quantity, rate, setValue]);
+    const { register, handleSubmit, getValues, setValue, reset, formState: { errors } } = useForm();
 
     const loadData = async () => {
         const params = new URLSearchParams({ per_page: '500' });
@@ -187,14 +180,22 @@ const PurchasesEntry = () => {
         return { totalFilteredQty: totalQty, avgRate: avg };
     }, [purchases]);
 
+    // Load data only on mount
     useEffect(() => {
         loadData();
+    }, [/* only run once */]);
+
+    // Setup initial form values
+    useEffect(() => {
         const now = new Date();
         setValue('date_ad', getTodayAdDateStr());
         setValue('date_bs', getTodayNepaliDateStr());
         setValue('time', now.toTimeString().split(' ')[0].substring(0, 5));
         setValue('vendor_name', 'Farmer');
+    }, [setValue]);
 
+    // Shortcut listener
+    useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if ((e.ctrlKey || e.metaKey) && e.key === 's') {
                 e.preventDefault();
@@ -203,7 +204,7 @@ const PurchasesEntry = () => {
         };
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [setValue, handleSubmit]);
+    }, [handleSubmit]);
 
     const onSubmit = async (data: any) => {
         try {
@@ -274,14 +275,12 @@ const PurchasesEntry = () => {
     const table = useReactTable({
         data: purchases.length ? purchases : [],
         columns,
-        state: { rowSelection },
         enableRowSelection: row => !row.original.is_billed,
-        onRowSelectionChange: setRowSelection,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
     });
 
-    const selectedRows = table.getSelectedRowModel().flatRows.map(r => r.original);
+    const selectedRows = table.getSelectedRowModel?.()?.flatRows?.map(r => r.original) || [];
 
     return (
         <div className="flex flex-col h-[calc(100vh-6rem)] relative">
@@ -325,11 +324,27 @@ const PurchasesEntry = () => {
                         </div>
                         <div className="lg:col-span-1">
                             <label className="block text-xs font-medium text-gray-700">Qty</label>
-                            <input type="number" step="0.01" {...register('quantity', { required: true, min: 0.01 })} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border py-2 px-3" />
+                            <input type="number" step="0.01" {...register('quantity', { 
+                                required: true, 
+                                min: 0.01,
+                                onChange: (e) => {
+                                    const qty = parseFloat(e.target.value) || 0;
+                                    const currentRate = parseFloat(getValues('rate')) || 0;
+                                    setValue('total_amount', (qty * currentRate).toFixed(2));
+                                }
+                            })} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border py-2 px-3" />
                         </div>
                         <div className="lg:col-span-1">
                             <label className="block text-xs font-medium text-gray-700">Rate</label>
-                            <input type="number" step="0.01" {...register('rate', { required: true, min: 0 })} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border py-2 px-3" />
+                            <input type="number" step="0.01" {...register('rate', { 
+                                required: true, 
+                                min: 0,
+                                onChange: (e) => {
+                                    const rate = parseFloat(e.target.value) || 0;
+                                    const currentQty = parseFloat(getValues('quantity')) || 0;
+                                    setValue('total_amount', (currentQty * rate).toFixed(2));
+                                }
+                            })} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border py-2 px-3" />
                         </div>
                         <div className="lg:col-span-1">
                             <label className="block text-xs font-medium text-gray-700">Total</label>
@@ -410,7 +425,7 @@ const PurchasesEntry = () => {
                             ))}
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
-                            {table.getRowModel().rows.map(row => (
+                            {table.getRowModel().rows.slice(0, table.getState().pagination.pageSize || 10).map(row => (
                                 <tr key={row.id} className="hover:bg-gray-50 transition-colors">
                                     {row.getVisibleCells().map(cell => (
                                         <td key={cell.id} className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
@@ -438,7 +453,7 @@ const PurchasesEntry = () => {
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 selectedPurchases={selectedRows}
-                onSuccess={() => { setRowSelection({}); loadData(); }}
+                onSuccess={() => { table.resetRowSelection(); loadData(); }}
             />
 
             {
