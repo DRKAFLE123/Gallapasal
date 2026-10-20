@@ -2,12 +2,14 @@ import type { Metadata } from 'next';
 import './globals.css';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import ScrollProgress from '../components/ScrollProgress';
+import BackToTop from '../components/BackToTop';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://damodarkafle.com.np'),
   title: 'Damodar Kafle | Senior Full-Stack Developer & AI/ML Engineer',
   description:
-    'Damodar Kafle — Senior Full-Stack Developer, AI/ML Engineer, QA Specialist, and IT Project Manager based in Kathmandu, Nepal. Creator of Gallapasal, Digital Nomads in Nepal, and Language Guru.',
+    'Damodar Kafle â€” Senior Full-Stack Developer, AI/ML Engineer, QA Specialist, and IT Project Manager based in Kathmandu, Nepal. Creator of Gallapasal, Digital Nomads in Nepal, and Language Guru.',
   keywords: [
     'Damodar Kafle',
     'Full-Stack Developer Nepal',
@@ -109,9 +111,11 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen flex flex-col bg-[#090d16] text-[#f8fafc] antialiased selection:bg-cyan-500/20 selection:text-cyan-300">
+        <ScrollProgress />
         <Navbar />
         <main className="flex-grow">{children}</main>
         <Footer />
+        <BackToTop />
       </body>
     </html>
   );

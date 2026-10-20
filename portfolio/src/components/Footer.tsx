@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { Github, Mail, Phone, ArrowUpRight, Heart } from 'lucide-react';
+import { Github, Mail, Phone, ArrowUpRight, Heart, Workflow, BookOpen } from 'lucide-react';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -34,17 +34,19 @@ export default function Footer() {
           </div>
 
           {/* Quick Links */}
-          <nav aria-label="Footer Navigation" className="flex flex-wrap items-center justify-center gap-6 text-xs text-slate-400 font-medium">
-            <a href="#about" className="hover:text-cyan-400 transition-colors">About</a>
-            <a href="#projects" className="hover:text-cyan-400 transition-colors">Projects</a>
-            <a href="#skills" className="hover:text-cyan-400 transition-colors">Skills</a>
-            <a href="#github" className="hover:text-cyan-400 transition-colors">GitHub</a>
-            <a href="#contact" className="hover:text-cyan-400 transition-colors">Contact</a>
+          <nav aria-label="Footer Navigation" className="flex flex-wrap items-center justify-center gap-5 text-xs text-slate-400 font-medium">
+            <a href="/#about" className="hover:text-cyan-400 transition-colors">About</a>
+            <a href="/#projects" className="hover:text-cyan-400 transition-colors">Projects</a>
+            <a href="/#visualizations" className="hover:text-cyan-400 transition-colors">Visualizations</a>
+            <a href="/#process" className="hover:text-cyan-400 transition-colors">Process</a>
+            <a href="/#skills" className="hover:text-cyan-400 transition-colors">Skills</a>
+            <a href="/#writing" className="hover:text-cyan-400 transition-colors">Writing</a>
+            <a href="/#contact" className="hover:text-cyan-400 transition-colors">Contact</a>
             <a
               href="https://pos.damodarkafle.com.np/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-emerald-400 hover:text-emerald-300 inline-flex items-center"
+              className="text-emerald-400 hover:text-emerald-300 inline-flex items-center font-semibold"
             >
               <span>Gallapasal POS</span>
               <ArrowUpRight className="w-3 h-3 ml-0.5" />
@@ -83,9 +85,9 @@ export default function Footer() {
 
         {/* Bottom copyright notice */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-3">
-          <p>© {currentYear} Damodar Kafle. All rights reserved. Kathmandu, Nepal.</p>
-          <p className="flex items-center">
-            Built with Next.js, TypeScript & Tailwind CSS.
+          <p>Â© {currentYear} Damodar Kafle. All rights reserved. Kathmandu, Nepal.</p>
+          <p className="flex items-center space-x-1">
+            <span>Built with Next.js 15, TypeScript & Tailwind CSS.</span>
           </p>
         </div>
       </div>
