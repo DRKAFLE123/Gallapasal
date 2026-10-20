@@ -71,7 +71,7 @@ export default function Navbar() {
             {/* Live Gallapasal Product Link */}
             <a
               id="header-gallapasal-link"
-              href="https://business.damodarkafle.com.np/"
+              href="https://pos.damodarkafle.com.np/"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center space-x-1 px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-all ml-2"
@@ -119,7 +119,7 @@ export default function Navbar() {
             ))}
             <div className="pt-2 px-2 border-t border-slate-800 mt-2">
               <a
-                href="https://business.damodarkafle.com.np/"
+                href="https://pos.damodarkafle.com.np/"
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => setIsOpen(false)}

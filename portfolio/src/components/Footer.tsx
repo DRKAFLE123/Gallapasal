@@ -41,7 +41,7 @@ export default function Footer() {
             <a href="#github" className="hover:text-cyan-400 transition-colors">GitHub</a>
             <a href="#contact" className="hover:text-cyan-400 transition-colors">Contact</a>
             <a
-              href="https://business.damodarkafle.com.np/"
+              href="https://pos.damodarkafle.com.np/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-emerald-400 hover:text-emerald-300 inline-flex items-center"

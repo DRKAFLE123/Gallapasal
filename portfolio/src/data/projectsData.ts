@@ -7,7 +7,7 @@ export const projectsData: Project[] = [
     tagline: 'Enterprise Point-of-Sale & Grain Ledger Accounting System',
     category: ['Live Products', 'Web Applications', 'E-Commerce'],
     status: 'Live Product',
-    liveUrl: 'https://business.damodarkafle.com.np/',
+    liveUrl: 'https://pos.damodarkafle.com.np/',
     githubUrl: 'https://github.com/DRKAFLE123/Gallapasal',
     featured: true,
     description: 'A comprehensive, high-throughput point-of-sale and financial ledger web application engineered for grain distributors and merchants. Integrates live stock registers, multi-party purchase and sales logging, automated dual Gregorian (AD) and Bikram Sambat (BS) date reconciliation, PDF voucher generation, and secure multi-tier roles.',
