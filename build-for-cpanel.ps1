@@ -61,7 +61,7 @@ Copy-Item (Join-Path $BackendDir ".env.production.example") `
 
 # ── Step 4: Copy public/ → public_html/ ──────────────────────────────────────
 Write-Host "`n[4/5] Copying public/ to dist/public_html/ ..." -ForegroundColor Yellow
-Copy-Item (Join-Path $BackendDir "public\*") $PublicDir -Recurse -Force
+Get-ChildItem (Join-Path $BackendDir "public") | Where-Object { $_.Name -ne "storage" } | ForEach-Object { Copy-Item $_.FullName (Join-Path $PublicDir $_.Name) -Recurse -Force }
 
 # Patch index.php to point to the app folder outside public_html
 $indexPath = Join-Path $PublicDir "index.php"
