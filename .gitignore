@@ -1,0 +1,15 @@
+.npm-cache/
+node_modules/
+**/node_modules/
+.next/
+**/.next/
+backend/vendor/
+backend/.env
+backend/.env.production
+backend/public/build
+backend/public/hot
+backend/storage/*.key
+.env.local
+**/.env.local
+.DS_Store
+Thumbs.db

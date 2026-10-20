@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Outlet, Navigate, Link, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
 import ProfileModal from '../ProfileModal';
-import { Home, ShoppingCart, Activity, FileText, LogOut, Package, Database, Menu, X, User, ChevronDown, AlertTriangle } from 'lucide-react';
+import { Home, ShoppingCart, Activity, FileText, LogOut, Package, Database, Menu, X, User, ChevronDown, AlertTriangle, ExternalLink, Globe } from 'lucide-react';
 import api from '../../lib/axios';
 
 export class RouteErrorBoundary extends React.Component<{children: React.ReactNode}, {hasError: boolean, error: Error | null}> {
@@ -104,7 +104,7 @@ const DashboardLayout = () => {
 
     // Sidebar Logo Brand Component
     const SidebarBrand = () => (
-        <div className="flex items-center px-4 mb-5">
+        <div className="flex flex-col px-4 mb-5">
             <div className="flex items-center space-x-2">
                 {logoUrl ? (
                     <img src={logoUrl} alt={shopName} className="h-9 w-9 rounded-lg object-cover border border-gray-200 shadow-sm" />
@@ -115,6 +115,17 @@ const DashboardLayout = () => {
                 )}
                 <span className="text-base font-bold tracking-tight text-blue-700 leading-tight">{shopName}</span>
             </div>
+            <a
+                href="https://damodarkafle.com.np/"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="View Creator's Personal Portfolio"
+                className="mt-1.5 flex items-center space-x-1 text-[11px] text-gray-500 hover:text-blue-600 transition-colors pl-0.5"
+            >
+                <span className="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
+                <span>By Damodar Kafle</span>
+                <ExternalLink className="w-2.5 h-2.5 ml-0.5 text-gray-400" />
+            </a>
         </div>
     );
 
@@ -158,6 +169,16 @@ const DashboardLayout = () => {
                             <User className="h-4 w-4 mr-3 text-gray-400" />
                             Edit Profile & Shop
                         </button>
+                        <a
+                            href="https://damodarkafle.com.np/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex w-full items-center px-4 py-2.5 text-sm text-blue-700 hover:bg-blue-50 transition-colors"
+                        >
+                            <Globe className="h-4 w-4 mr-3 text-blue-600" />
+                            <span>Damodar Kafle Portfolio</span>
+                            <ExternalLink className="w-3.5 h-3.5 ml-auto text-blue-500" />
+                        </a>
                         <hr className="my-1 border-gray-100" />
                         <button
                             onClick={handleLogout}
@@ -196,13 +217,13 @@ const DashboardLayout = () => {
                                 {navigation.map((item) => {
                                     const isActive = location.pathname === item.href || (item.href !== '/' && location.pathname.startsWith(item.href));
                                     return (
-                                        <a key={item.name} href={item.href}
+                                        <Link key={item.name} to={item.href}
                                             onClick={() => setIsMobileMenuOpen(false)}
                                             className={`group flex items-center rounded-md px-2 py-2 text-base font-medium ${isActive ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'}`}
                                         >
                                             <item.icon className={`mr-4 h-6 w-6 flex-shrink-0 ${isActive ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-500'}`} />
                                             {item.name}
-                                        </a>
+                                        </Link>
                                     );
                                 })}
                             </nav>
@@ -221,12 +242,12 @@ const DashboardLayout = () => {
                             {navigation.map((item) => {
                                 const isActive = location.pathname === item.href || (item.href !== '/' && location.pathname.startsWith(item.href));
                                 return (
-                                    <a key={item.name} href={item.href}
+                                    <Link key={item.name} to={item.href}
                                         className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md ${isActive ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'}`}
                                     >
                                         <item.icon className={`mr-3 flex-shrink-0 h-5 w-5 ${isActive ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-500'}`} />
                                         {item.name}
-                                    </a>
+                                    </Link>
                                 );
                             })}
                         </nav>
@@ -251,6 +272,21 @@ const DashboardLayout = () => {
 
                         {/* Right Side Header Actions */}
                         <div className="flex items-center space-x-3 ml-auto">
+                            {/* Damodar Kafle Brand / Portfolio Link */}
+                            <a
+                                id="header-creator-portfolio-btn"
+                                href="https://damodarkafle.com.np/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                title="Damodar Kafle — Open Personal Portfolio"
+                                className="hidden sm:inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-50/80 hover:bg-blue-100/80 text-blue-800 border border-blue-200/80 shadow-xs transition-all group"
+                            >
+                                <span className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse"></span>
+                                <span className="text-gray-500 group-hover:text-blue-700">Author:</span>
+                                <span className="font-bold text-blue-900 group-hover:text-blue-950">Damodar Kafle</span>
+                                <ExternalLink className="w-3.5 h-3.5 text-blue-500 group-hover:text-blue-700 ml-0.5" />
+                            </a>
+
                             {user?.role === 'admin' && (
                                 <button
                                     onClick={handleBackup}
